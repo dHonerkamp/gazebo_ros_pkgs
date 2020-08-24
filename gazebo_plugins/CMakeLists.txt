@@ -28,6 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
   diagnostic_updater
   camera_info_manager
   std_msgs
+  moveit_msgs
 )
 
 # Through transitive dependencies in the packages above, gazebo_plugins depends
@@ -136,6 +137,7 @@ catkin_package(
   gazebo_ros_planar_move
   gazebo_ros_range
   gazebo_ros_vacuum_gripper
+  moveit_msgs
 
   CATKIN_DEPENDS
   message_runtime
@@ -246,6 +248,10 @@ target_link_libraries(gazebo_ros_laser RayPlugin ${catkin_LIBRARIES})
 
 add_library(gazebo_ros_block_laser src/gazebo_ros_block_laser.cpp)
 target_link_libraries(gazebo_ros_block_laser RayPlugin ${catkin_LIBRARIES})
+
+add_library(gazebo_ros_moveit_planning_scene src/gazebo_ros_moveit_planning_scene.cpp)
+add_dependencies(gazebo_ros_moveit_planning_scene ${catkin_EXPORTED_TARGETS})
+target_link_libraries(gazebo_ros_moveit_planning_scene ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
 add_library(gazebo_ros_p3d src/gazebo_ros_p3d.cpp)
 target_link_libraries(gazebo_ros_p3d ${catkin_LIBRARIES} ${Boost_LIBRARIES})
@@ -361,6 +367,7 @@ install(TARGETS
   gazebo_ros_vacuum_gripper
   gazebo_ros_gpu_laser
   gazebo_ros_range
+  gazebo_ros_moveit_planning_scene
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
