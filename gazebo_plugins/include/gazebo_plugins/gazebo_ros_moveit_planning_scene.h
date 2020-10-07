@@ -132,6 +132,7 @@ class GazeboRosMoveItPlanningScene : public ModelPlugin
   private: std::string scene_name_;
   private: std::string robot_name_;
   private: std::string model_name_;
+  private: std::string publish_frame_id_;
 
   /// \brief for setting ROS name space
   private: std::string robot_namespace_;

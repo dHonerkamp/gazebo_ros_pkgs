@@ -101,6 +101,11 @@ void GazeboRosMoveItPlanningScene::Load(physics::ModelPtr _model, sdf::ElementPt
     this->publish_period_ = ros::Duration(_sdf->GetElement("updatePeriod")->Get<double>());
   }
 
+  if (!_sdf->HasElement("publishFrameId")) {
+    this->publish_frame_id_ = "world";
+  } else {
+    this->publish_frame_id_ = _sdf->GetElement("publishFrameId")->Get<std::string>();
+  }
 
   // Make sure the ROS node for Gazebo has already been initialized
   if (!ros::isInitialized())
@@ -126,7 +131,7 @@ void GazeboRosMoveItPlanningScene::Load(physics::ModelPtr _model, sdf::ElementPt
   ros::AdvertiseServiceOptions aso;
   boost::function<bool(std_srvs::Empty::Request&, std_srvs::Empty::Response&)> srv_cb =
     boost::bind(&GazeboRosMoveItPlanningScene::PublishPlanningSceneCB, this, _1, _2);
-  aso.init("publish_planning_scene", srv_cb);
+  aso.init("publish_plugin_planning_scene", srv_cb);
   aso.callback_queue = &this->queue_;
 
   publish_planning_scene_service_ = this->rosnode_->advertiseService(aso);
@@ -246,7 +251,7 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
 
         moveit_msgs::CollisionObject new_object;
         new_object.id = id;
-        new_object.header.frame_id = "world";
+        new_object.header.frame_id = publish_frame_id_;
         new_object.operation = moveit_msgs::CollisionObject::ADD;
 
         collision_object_map_[id] = new_object;
